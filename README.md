@@ -1,2 +1,1 @@
 # tiny-ticker
-# tiny-ticker
