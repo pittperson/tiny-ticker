@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%">
+   <head>
+      <meta charset="UTF-8">
+      <title>{{ symbol.upper() }} Value</title>
+      <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.2.0/socket.io.js" integrity="sha512-WL6WGKMPBiM9PnHRYIn5YEtq0Z8XP4fkVb4qy7PP4vhmYQErJ/dySyXuFIMDf1eEYCXCrQrMJfkNwKc9gsjTjA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+
+
+      
+   </head>
+   <body style="height: 100%">
+		<div class="container-fluid">
+			<div class="row" style="background-color: #f22f46;">
+				<div class="col-10" style="font-weight: bold; font-size: 30pt; color: #fff;"><span class="align-top">{{ symbol.upper() }}</span></div>
+				<div class="col-2" style="padding-right: 20px;">
+					<span class="text-end"><img src="" id="logo" style="float: right;" /></span>
+				</div>
+			</div>
+
+			
+			<div class="row" style="vertical-align: middle;">
+				<div class="col-12" style="margin-top: 50px; text-align: center; font-size: 75pt; font-weight: bold; background-color: #fff" id="price">$0.00</div>
+			</div>
+			
+		</div>
+	</body>
+
+	<script type="text/javascript">
+	  
+        var tradeData = null;
+        var tickerSymbol = "{{ symbol }}"
+		var domain = "{{ domain }}"
+		var finnhubKey = "{{ finnhubKey }}"
+		var logo = "https://logo.clearbit.com/" + domain + "/?size=64"
+		document.getElementById('logo').src = logo;
+
+		console.log("symbol: " + tickerSymbol)
+		console.log("domain: " + domain)
+		console.log("finnhub: " + finnhubKey)
+
+        var exampleSocket = new WebSocket("wss://ws.finnhub.io?token=" + finnhubKey);
+        // console.log(exampleSocket.readyState);
+
+        exampleSocket.addEventListener('open', (event) => {
+            exampleSocket.send('{"type":"subscribe","symbol":"' + tickerSymbol.toUpperCase() + '"}');
+            console.log("subscribed to: " + tickerSymbol.toUpperCase())
+        });
+
+        var lastPrice = null
+        exampleSocket.onmessage = function (event) {
+			// console.log(JSON.parse(event.data));
+            tradeData = JSON.parse(event.data);
+            console.log('Price: ' + tradeData.data[0].p)
+            price = (tradeData.data[0].p)
+			console.log('Last Price: ' + lastPrice)
+
+
+			if (price > lastPrice) {
+				document.getElementById("price").style.color = "green"
+			} else {
+				document.getElementById("price").style.color = "red"
+			}
+
+			lastPrice = price
+            document.getElementById("price").innerHTML = '$' + price.toFixed(2);
+        }
+
+
+      </script>
+</html>
