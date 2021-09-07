@@ -22,9 +22,13 @@
 				</div>
 			</div>
 
+			<div class="row">
+				<div class="col-12" style="font-weight: bold; font-size: 15pt;"><span style="">Previous Close:</span> <span id="previousClose"></span></div>
+			</div>
+
 			
 			<div class="row" style="vertical-align: middle;">
-				<div class="col-12" style="margin-top: 50px; text-align: center; font-size: 75pt; font-weight: bold; background-color: #fff" id="price">$0.00</div>
+				<div class="col-12" style="margin-top: 20px; text-align: center; font-size: 75pt; font-weight: bold; background-color: #fff" id="price">$0.00</div>
 			</div>
 			
 		</div>
@@ -32,27 +36,36 @@
 
 	<script type="text/javascript">
 	  
-        var tradeData = null;
+        var tradeData = "";
         var tickerSymbol = "{{ symbol }}"
 		var domain = "{{ domain }}"
 		var finnhubKey = "{{ finnhubKey }}"
 		var logo = "https://logo.clearbit.com/" + domain + "/?size=64"
 		document.getElementById('logo').src = logo;
 
+		// console.log("https://finnhub.io/api/v1/quote?symbol=TWLO&token=" + finnhubKey)
+
+		var lookup = ""
+		fetch("https://finnhub.io/api/v1/quote?symbol=TWLO&token=" + finnhubKey)
+			.then(response => response.json())
+			.then(data => {
+				document.getElementById('previousClose').innerHTML = "$" + data.pc
+			});
+
 		console.log("symbol: " + tickerSymbol)
 		console.log("domain: " + domain)
 		console.log("finnhub: " + finnhubKey)
 
-        var exampleSocket = new WebSocket("wss://ws.finnhub.io?token=" + finnhubKey);
-        // console.log(exampleSocket.readyState);
+        var socketConnection = new WebSocket("wss://ws.finnhub.io?token=" + finnhubKey);
+        // console.log(socketConnection.readyState);
 
-        exampleSocket.addEventListener('open', (event) => {
-            exampleSocket.send('{"type":"subscribe","symbol":"' + tickerSymbol.toUpperCase() + '"}');
+        socketConnection.addEventListener('open', (event) => {
+            socketConnection.send('{"type":"subscribe","symbol":"' + tickerSymbol.toUpperCase() + '"}');
             console.log("subscribed to: " + tickerSymbol.toUpperCase())
         });
 
         var lastPrice = null
-        exampleSocket.onmessage = function (event) {
+        socketConnection.onmessage = function (event) {
 			// console.log(JSON.parse(event.data));
             tradeData = JSON.parse(event.data);
             console.log('Price: ' + tradeData.data[0].p)
