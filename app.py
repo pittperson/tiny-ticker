@@ -11,13 +11,12 @@ FINNHUB_KEY = os.environ.get('FINNHUB_KEY')
 
 @app.route("/")
 def index():
-    return "hi"
+    return renter_template("index.html")
 
 @app.route("/ticker/<symbol>/<domain>")
 def ticker(symbol, domain):
     return render_template("ticker.html", symbol=symbol, domain=domain, finnhubKey=FINNHUB_KEY)
 
-
 if __name__ == '__main__':
-    app.run(host="0.0.0.0",port=5000,debug=True)
-    # app.run(host="0.0.0.0",port=5000,debug=False)
+    # app.run(host="0.0.0.0",port=5000,debug=True)
+    app.run(host="0.0.0.0",port=5000,debug=False)
