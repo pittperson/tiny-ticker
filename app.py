@@ -33,7 +33,8 @@ def ticker(symbol, domain):
 def price():
 
     quote = finnhub_client.quote(
-        (request.values.get('Body', None).upper().strip()))
+        (request.values.get('Body', None).upper().strip())
+    )
     # print(quote["c"])
 
     response = MessagingResponse()
