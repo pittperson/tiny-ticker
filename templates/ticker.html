@@ -72,7 +72,7 @@
 
         var lastPrice = null
         socketConnection.onmessage = function (event) {
-			// console.log(JSON.parse(event.data));
+			 console.log(JSON.parse(event.data));
             tradeData = JSON.parse(event.data);
             // console.log('Price: ' + tradeData.data[0].p)
             price = (tradeData.data[0].p)

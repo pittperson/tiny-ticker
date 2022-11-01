@@ -23,6 +23,9 @@ finnhub_client = finnhub.Client(api_key=FINNHUB_KEY)
 def index():
     return render_template("index.html")
 
+@app.route("/loop/<symbols>")
+def loop(symbols):
+    return render_template("loop.html", symbols=symbols, finnhubKey=FINNHUB_KEY)
 
 @app.route("/ticker/<symbol>/<domain>")
 def ticker(symbol, domain):
@@ -49,5 +52,5 @@ def price():
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000, debug=True)
-    # app.run(host="0.0.0.0",port=5000,debug=False)
+    #app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0",port=5000,debug=False)
